@@ -16,12 +16,7 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.ow2.easybeans.tests</groupId>
-            <artifactId>easybeans-tests-applications-ejbjars-aroundinvoke</artifactId>
-            <version>2.0.2</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>ru.geekbrains</groupId>
             <artifactId>common</artifactId>
