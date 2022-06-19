@@ -32,4 +32,9 @@ public abstract class AbstractConversation implements IConversation
     }
 
 
+    public abstract void start();
+
+    public abstract void processMessageFromPeer(@NotNull IMessage message);
+
+    public abstract void stop();
 }

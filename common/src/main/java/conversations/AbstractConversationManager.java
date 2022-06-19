@@ -50,4 +50,7 @@ public abstract class AbstractConversationManager implements IConversationManage
     {
         return null;
     }
+
+   /* public ITransportChannel getTransportChannel() {
+    }*/
 }

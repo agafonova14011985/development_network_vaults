@@ -1,5 +1,6 @@
-
 import conversations.ClientConversationManager;
+import conversations.IClientAgent;
+import conversations.KeepAliveClientAgent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -8,15 +9,15 @@ import transport.INetworkEndpoint;
 import transport.ITransportChannel;
 import transport.NioTransportChannel;
 
+import javax.enterprise.inject.spi.CDI;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-
 public class NioClient implements INetworkEndpoint
 {
-    //private static final
+    private static final int PING_PERIOD = 1000;
 
 
     @Getter
@@ -40,13 +41,32 @@ public class NioClient implements INetworkEndpoint
         final SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("localhost", 9999));
         socketChannel.configureBlocking(false);
         socketChannel.register(selector, SelectionKey.OP_READ);
-        final NioTransportChannel channel;///////////////
-//
-        //
-        //
-        // что то здесь у меня не получается ни чего, не могу все связать запуталась , что то упускаю  или все
-        //вообще переделать ((((
+        final NioTransportChannel channel = CDI.current().select(NioTransportChannel.class).get();
+        channel.setSocketChannel(socketChannel);
+        transportChannel = channel;
+
+        ITransportChannel finalTransportChannel = transportChannel;
+        pingWorker = new Thread(() ->
+        {
+            while(finalTransportChannel.isConnected())
+            {
+                IClientAgent keepAliveAgent = CDI.current().select(KeepAliveClientAgent.class).get();
+                keepAliveAgent.setTransportChannel(finalTransportChannel);
+                keepAliveAgent.setConversationManager(conversationManager);
+                conversationManager.startConversation(keepAliveAgent);
+
+                try
+                {
+                    Thread.sleep(PING_PERIOD);
+                }
+                catch (InterruptedException e)
+                {
+                    break;
+                }
+            }
+        });
     }
+
 
     @Override
     @SneakyThrows

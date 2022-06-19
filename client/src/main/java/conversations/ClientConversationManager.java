@@ -1,14 +1,20 @@
 package conversations;
 
-import org.jetbrains.annotations.NotNull;
 
+import transport.ITransportChannel;
 
 public class ClientConversationManager extends AbstractConversationManager
 {
-    public void startConversation(final @NotNull IClientAgent conversation)
+    public void startConversation(final Class<KeepAliveClientAgent> conversation)
     {
-        conversation.setConversationManager(this);
-        conversationMap.put(conversation.getId(), conversation);
-        conversation.start();
+
+    }
+
+
+    public ITransportChannel getTransportChannel() {
+        //
+        //
+        //
+        return null;
     }
 }

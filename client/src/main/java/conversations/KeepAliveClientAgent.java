@@ -24,12 +24,23 @@ public class KeepAliveClientAgent extends AbstractClientAgent
     }
 
     @Override
-    public void start()
+    public synchronized void start()
     {
         startTime = System.currentTimeMillis();
         expectMessage(KeepAliveMessage.class);
-        final IMessage outgoingMessage = new KeepAliveMessage();
-        outgoingMessage.setConversationId(getId());
-        getTransportChannel().sendMessage(outgoingMessage);
+        sendMessageToPeer(new KeepAliveMessage());
+    }
+
+    @Override
+    public void processMessageFromPeer(@NotNull IMessage message) {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    private void sendMessageToPeer(KeepAliveMessage keepAliveMessage) {
     }
 }
